@@ -1,0 +1,33 @@
+{
+    "deno.enable": true,
+    "deno.unstable": true,
+    "deno.lint": true,
+    "deno.importMap": "./deno.json",
+    "editor.tabCompletion": "on",
+    "[json]": {
+        "editor.tabSize": 4
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "denoland.vscode-deno",
+        "editor.tabSize": 4
+    },
+    "editor.bracketPairColorization.enabled": true,
+    "editor.formatOnPaste": false,
+    "editor.rulers": [
+        100
+    ],
+    "editor.trimAutoWhitespace": true,
+    "files.trimTrailingWhitespace": true,
+    "git.inputValidation": true,
+    "git.inputValidationLength": 70,
+    "git.inputValidationSubjectLength": 50,
+    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
+    "debug.javascript.unmapMissingSources": true,
+    "editor.formatOnSave": true,
+    "deno.suggest.imports.hosts": {
+        "https://deno.land": true
+    },
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+}
