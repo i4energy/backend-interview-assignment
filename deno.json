@@ -1,7 +1,9 @@
 {
   "tasks": {
     "dev": "deno run --watch word_chain.ts",
-    "tests": "deno test -A"
+    "tests": "deno test -A",
+    "start": "deno run --allow-net --allow-read --allow-env --allow-import index.ts",
+    "debug": "deno run --allow-net --allow-read --allow-env --allow-import --inspect index.ts"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1",

@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "router": "github:zhmushan/router#v2"
+  }
+}
