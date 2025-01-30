@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "dom",
+            "deno.ns"
+        ],
+        "strict": true,
+        "module": "esnext",
+        "target": "esnext",
+        "jsx": "react",
+        "jsxFactory": "h",
+        "jsxFragmentFactory": "Fragment"
+    }
+}
