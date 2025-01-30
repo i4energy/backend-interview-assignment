@@ -1,3 +1,9 @@
+import {
+  dirname,
+  fromFileUrl,
+} from "https://deno.land/std@0.188.0/path/mod.ts";
+import { join } from "oak/deps.ts";
+
 type Dictionary = Set<string>;
 type Path = string[];
 
@@ -7,6 +13,12 @@ type BFSState = {
   parentMap: Map<string, string[]>;
 };
 
+// Get the directory of the current script
+const __dirname = dirname(fromFileUrl(import.meta.url));
+const filePath = join(__dirname, "../data/tournament_words.txt");
+const fileContent = await Deno.readTextFile(filePath);
+const wordList = fileContent.split("\n");
+
 /**
  * Finds the shortest word chain from `start` to `end` using a Bidirectional BFS approach.
  * @param start - The starting word
@@ -14,7 +26,10 @@ type BFSState = {
  * @param wordList - The dictionary of valid words
  * @returns The shortest word chain as an array of strings, or an empty array if no chain exists
  */
-const wordChain = (start: string, end: string, wordList: string[]): Path => {
+export const solveWordChain = (
+  start: string,
+  end: string,
+): Path => {
   if (start === end) return [start];
 
   const dictionary = preprocessDictionary(wordList, start);
@@ -27,21 +42,22 @@ const wordChain = (start: string, end: string, wordList: string[]): Path => {
   const forward: BFSState = {
     currentSet: new Set([start]),
     visited: new Set(),
-    parentMap: new Map()
+    parentMap: new Map(),
   };
 
   const backward: BFSState = {
     currentSet: new Set([end]),
     visited: new Set(),
-    parentMap: new Map()
+    parentMap: new Map(),
   };
 
   // BFS level tracker
   while (forward.currentSet.size > 0 && backward.currentSet.size > 0) {
     // Expand the smaller set for efficiency
-    let [current, opposite] = forward.currentSet.size > backward.currentSet.size
-    ? [backward, forward]
-    : [forward, backward];
+    const [current, opposite] =
+      forward.currentSet.size > backward.currentSet.size
+        ? [backward, forward]
+        : [forward, backward];
     const nextSet: Set<string> = new Set();
 
     for (const word of current.currentSet) {
@@ -55,7 +71,7 @@ const wordChain = (start: string, end: string, wordList: string[]): Path => {
             opposite.parentMap,
             start,
             end,
-            neighbor!
+            neighbor!,
           );
         }
         if (!current.visited.has(neighbor)) {
@@ -79,12 +95,12 @@ const wordChain = (start: string, end: string, wordList: string[]): Path => {
  */
 const preprocessDictionary = (
   wordList: string[],
-  start: string
+  start: string,
 ): Dictionary => {
   return new Set(
     wordList
       .filter((word) => word.length === start.length + 1)
-      .map((word) => word.toLowerCase().replace(/\r/g, ""))
+      .map((word) => word.toLowerCase().replace(/\r/g, "")),
   );
 };
 
@@ -128,7 +144,7 @@ function getNeighbors(word: string, dictionary: Dictionary): string[] {
 const updateParentMap = (
   parentMap: Map<string, string[]>,
   word: string,
-  parent: string
+  parent: string,
 ) => {
   if (!parentMap.has(word)) parentMap.set(word, []);
   parentMap.get(word)!.push(parent);
@@ -148,7 +164,7 @@ const reconstructBidirectionalPath = (
   secondMap: Map<string, string[]>,
   start: string,
   end: string,
-  meetingWord: string
+  meetingWord: string,
 ): string[] => {
   // Determine which map corresponds to which direction
   const [forwardMap, backwardMap] = firstMap.has(start)
@@ -159,7 +175,7 @@ const reconstructBidirectionalPath = (
   const pathFromEnd: string[] = [];
 
   // Traverse from the meeting word back to the start
-  let current = meetingWord;
+  let current: string | undefined = meetingWord;
   while (current && current !== start) {
     pathFromStart.unshift(current);
     current = forwardMap.get(current)?.[0];
@@ -176,36 +192,3 @@ const reconstructBidirectionalPath = (
 
   return [...pathFromStart, ...pathFromEnd];
 };
-
-const fileContent = await Deno.readTextFile("./tournament_words.txt");
-const wordList = fileContent.split("\n");
-const start = "aback";
-const end = "abbey";
-
-// const start = "cat";
-// const end = "dog";
-const startTime = performance.now();
-
-const chain = wordChain(start, end, wordList);
-console.log(chain);
-
-const endTime = performance.now();
-
-console.log(endTime - startTime);
-
-// Results:
-// From "cat" to "dog"
-// [ "cat", "cot", "cog", "dog" ]
-// 4.185399999999994
-
-// From "aback" to "abbey"
-// [
-//   "aback", "alack",
-//   "flack", "flock",
-//   "flocs", "floes",
-//   "aloes", "almes",
-//   "almas", "albas",
-//   "abbas", "abbes",
-//   "abbey"
-// ]
-// 15.8795
