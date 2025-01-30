@@ -1,5 +1,4 @@
 import {
-  fetchDictionary,
   getDictionaryObject,
   getDistance,
   getIndexList,
@@ -7,17 +6,18 @@ import {
   mutateMap,
 } from "./helper.ts";
 
+import { dictionary } from "../index.ts";
+
 export const getKataPath = async (
   startWord: string,
   endWord: string,
 ): Promise<string[]> => {
   logState("Function has called");
 
-  const fetchedDictionary = await fetchDictionary();
   const dictionaryObject = getDictionaryObject(
     startWord,
     endWord,
-    fetchedDictionary,
+    dictionary,
   );
 
   const startMap = new Map<string, string[]>();
@@ -38,14 +38,7 @@ export const getKataPath = async (
   );
 
   while (!solved) {
-    // Check if the problem has solved
-    if (startMap.get(endWord) || endMap.get(startWord)) {
-      console.log("Solved");
-      console.log(startMap.get(endWord));
-      console.log(startMap.get(startWord));
-      solved = true;
-    }
-
+    logState(`Loop number ${step + 1} started`);
     // Get then next node words
     indexes[step].forEach((indexKey) => {
       dictionaryObject.get(indexKey)?.forEach((word) => {
@@ -67,37 +60,16 @@ export const getKataPath = async (
       step > startWord.length || startSolution.length > 0 ||
       endSolution.length > 0
     ) {
+      // TODO check if there is possibility for a better solution
       solved = true;
-      console.log("SOLVED");
       const allSolutions = [...startSolution, ...endSolution];
       const bestSolution = allSolutions.reduce((acc, sol) => {
         acc = acc.length > sol.length || acc.length === 0 ? sol : acc;
         return acc;
       }, []);
+      logState("SOLVED");
       return bestSolution;
     }
   }
-
-  return startMap.get(endWord) || [];
+  return [];
 };
-
-/**
- * 0,2  --> 3,0
- */
-
-//
-//  | 0	  1	  2	  3	  4	  5
-//--+-------------------------
-// 0|	0	  0	  1	  0	  0	  0
-// 1|	0	  0	  1	  0	  0	  0
-// 2|	1	  1	  4	  21	11	0
-// 3|	0	  0	  10	66	141	50
-// 4|	0	  0	  11	97	812	735
-// 5|	0	  0	  0	  14	571	6391
-
-///0_3  --- 3_0
-///  + 1_2 + 2_1 ===> 0_3 3_0   0_3 -> 1_2 -> 2_1 -> 3_0  ---> new Targets
-///
-
-///0_4 --- 4_0
-// 0_4 -> 1_3 -> 2_2 -> 3_1 -> 4_0
