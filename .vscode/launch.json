@@ -1,37 +1,37 @@
 {
-  "configurations": [
-    {
-      "name": "Run File",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "program": "${file}",
-      "runtimeExecutable": "deno",
-      "runtimeArgs": [
-          "run",
-          "--no-check",
-          "--inspect-brk",
-          "-A",
-      ],
-      "attachSimplePort": 9229,
-      "outputCapture": "std"
-    },
-    {
-      "name": "Test file",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "program": "${file}",
-      "runtimeExecutable": "deno",
-      "runtimeArgs": [
-          "test",
-          "--no-check",
-          "--inspect-brk",
-          "-A",
-          "--unstable"
-      ],
-      "attachSimplePort": 9229,
-      "outputCapture": "std"
-  },
-  ]
+    "configurations": [
+        {
+            "name": "Run File",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "${file}",
+            "runtimeExecutable": "deno",
+            "runtimeArgs": [
+                "run",
+                "--no-check",
+                "--inspect-brk",
+                "-A",
+            ],
+            "attachSimplePort": 9229,
+            "outputCapture": "std"
+        },
+        {
+            "name": "Test file",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "${file}",
+            "runtimeExecutable": "deno",
+            "runtimeArgs": [
+                "test",
+                "--no-check",
+                "--inspect-brk",
+                "-A",
+                "--unstable"
+            ],
+            "attachSimplePort": 9229,
+            "outputCapture": "std"
+        },
+    ]
 }
