@@ -1,7 +1,9 @@
 import {
+  fetchDictionary,
   getDictionaryObject,
   getDistance,
   getIndexList,
+  logState,
   mutateMap,
 } from "./helper.ts";
 
@@ -9,10 +11,14 @@ export const getKataPath = async (
   startWord: string,
   endWord: string,
 ): Promise<string[]> => {
-  const MAX_DISTANCE = 3;
+  logState("Function has called");
 
-  const { startWordDictionary, endWordDictionary, fullWordDictionary } =
-    await getDictionaryObject(startWord, endWord);
+  const fetchedDictionary = await fetchDictionary();
+  const dictionaryObject = getDictionaryObject(
+    startWord,
+    endWord,
+    fetchedDictionary,
+  );
 
   const startMap = new Map<string, string[]>();
   const endMap = new Map<string, string[]>();
@@ -30,6 +36,7 @@ export const getKataPath = async (
     getDistance(startWord, endWord),
     startWord.length,
   );
+
   while (!solved) {
     // Check if the problem has solved
     if (startMap.get(endWord) || endMap.get(startWord)) {
@@ -41,7 +48,7 @@ export const getKataPath = async (
 
     // Get then next node words
     indexes[step].forEach((indexKey) => {
-      fullWordDictionary.get(indexKey)?.forEach((word) => {
+      dictionaryObject.get(indexKey)?.forEach((word) => {
         startDictionary.add(word);
         endDictionary.add(word);
       });
