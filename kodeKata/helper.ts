@@ -69,7 +69,7 @@ export const getDictionaryObject = (
     startWordFound = startWordFound || startWordDistance === 0;
     endWordFound = endWordFound || endWordDistance === 0;
 
-    dictionaryObject.get(`${startWordDistance}_${endWordDistance}`).push(
+    dictionaryObject.get(`${startWordDistance}_${endWordDistance}`)?.push(
       word,
     );
   });
