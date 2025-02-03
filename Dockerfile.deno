@@ -1,0 +1,8 @@
+FROM denoland/deno:2.1.7
+
+WORKDIR /app
+
+COPY . .
+
+RUN ["deno", "cache", "--reload", "index.ts", "--no-check", "--unstable"]
+CMD ["deno", "run", "--allow-net", "--allow-read", "--allow-env", "--allow-import", "index.ts"]

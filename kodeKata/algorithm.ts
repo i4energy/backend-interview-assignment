@@ -6,13 +6,19 @@ import {
   mutateMap,
 } from "./helper.ts";
 
+import { Client } from "https://deno.land/x/mysql/mod.ts";
+
 import { dictionary } from "../index.ts";
 
 export const getKataPath = async (
-  startWord: string,
-  endWord: string,
+  _startWord: string,
+  _endWord: string,
 ): Promise<string[]> => {
   logState("Function has called");
+
+  const startTime = new Date().getTime();
+  const startWord = _startWord.toUpperCase();
+  const endWord = _endWord.toUpperCase();
 
   const dictionaryObject = getDictionaryObject(
     startWord,
@@ -67,8 +73,42 @@ export const getKataPath = async (
         acc = acc.length > sol.length || acc.length === 0 ? sol : acc;
         return acc;
       }, []);
-      logState("SOLVED");
-      return bestSolution;
+      logState("SOLVED\n");
+
+      const milliseconds = new Date().getTime() - startTime;
+
+      logState("Write results to the database");
+      try {
+        const sqlClient = await new Client().connect({
+          hostname: "mysql",
+          port: 3306,
+          username: "root",
+          password: "pass",
+          db: "KATA_DB",
+        });
+
+        await sqlClient.execute(
+          `
+            INSERT INTO requests (start_word, end_word, solution, milliseconds, run_at)
+            VALUES (?, ?, ?, ?, ?)
+          `,
+          [
+            startWord,
+            endWord,
+            JSON.stringify(bestSolution),
+            milliseconds,
+            new Date(),
+          ],
+        );
+
+        sqlClient.close();
+      } catch (error) {
+        console.log("Oups");
+        console.log(`${error}`);
+      }
+      return bestSolution[0] === startWord
+        ? bestSolution
+        : bestSolution.reverse();
     }
   }
   return [];

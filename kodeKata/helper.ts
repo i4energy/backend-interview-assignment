@@ -70,7 +70,7 @@ export const getDictionaryObject = (
     endWordFound = endWordFound || endWordDistance === 0;
 
     dictionaryObject.get(`${startWordDistance}_${endWordDistance}`)?.push(
-      word,
+      word.toUpperCase(),
     );
   });
 
@@ -145,7 +145,7 @@ export const mutateMap = (
           const solution = targetMap.get(w);
           dictionary.delete(w);
           if (solution) {
-            solutions.push([...path, ...solution]);
+            solutions.push([...path, ...solution.reverse()]);
           }
         });
       } else {

@@ -1,0 +1,31 @@
+version: "0.1"
+
+services:
+  deno-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.deno
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - backend
+
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "pass"
+      MYSQL_DATABASE: KATA_DB
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
